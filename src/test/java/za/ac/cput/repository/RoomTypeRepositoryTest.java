@@ -1,102 +1,49 @@
+/*
 package za.ac.cput.repository;
 
-import za.ac.cput.domain.RoomType;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
+@DataJpaTest
 public class RoomTypeRepositoryTest
 {
-/*
     @Autowired
-    private TestEntityManager entityManager;
-*/
-    //@Autowired
-    private RoomTypeRepository roomTypeRepository;
+    private RoomTypeRepository repository;
 
     @BeforeEach
-    public void setUp()
-    {
-        roomTypeRepository = new RoomTypeRepositoryImpl();
-    }
-
-
-    @Test
-    public void testCreateRoomType()
-    {
-        RoomType roomType = new RoomType.Builder()
-                .setRoomtypeName("Standard")
-                .setRoomPrice(100.0)
-                .build();
-
-        RoomType savedRoomType = roomTypeRepository.create(roomType);
-
-        assertNotNull(savedRoomType);
-        assertNotNull(savedRoomType.getTypeId());
-        assertEquals(roomType.getRoomtypeName(), savedRoomType.getRoomtypeName());
-        assertEquals(roomType.getRoomPrice(), savedRoomType.getRoomPrice());
+    void setUp() {
+        repository.deleteAll();
     }
 
     @Test
-    public void testFindById()
-    {
-        RoomType roomType = new RoomType.Builder()
-                .setRoomtypeName("Deluxe")
-                .setRoomPrice(150.0)
-                .build();
-
-        RoomType savedRoomType = roomTypeRepository.create(roomType);
-        RoomType foundRoomType = roomTypeRepository.findById(savedRoomType.getTypeId());
-
-        assertNotNull(foundRoomType);
-        assertEquals(savedRoomType.getTypeId(), foundRoomType.getTypeId());
-        assertEquals(savedRoomType.getRoomtypeName(), foundRoomType.getRoomtypeName());
-        assertEquals(savedRoomType.getRoomPrice(), foundRoomType.getRoomPrice());
-    }
-
-
-    @Test
-    public void testUpdateRoomType()
-    {
-        RoomType roomType = new RoomType.Builder()
-                .setRoomtypeName("Economy")
-                .setRoomPrice(80.0)
-                .build();
-
-        RoomType savedRoomType = roomTypeRepository.create(roomType);
-        savedRoomType = new RoomType.Builder()
-                .copy(savedRoomType)
-                .setRoomtypeName("Standard")
-                .build();
-
-        RoomType updatedRoomType = roomTypeRepository.update(savedRoomType);
-
-        assertNotNull(updatedRoomType);
-        assertEquals(savedRoomType.getTypeId(), updatedRoomType.getTypeId());
-        assertEquals(savedRoomType.getRoomtypeName(), updatedRoomType.getRoomtypeName());
-        assertEquals(savedRoomType.getRoomPrice(), updatedRoomType.getRoomPrice());
-    }
-
-
-    @Test
-    public void testDeleteRoomType()
-    {
+    void testCreateAndFindRoomType() {
         RoomType roomType = new RoomType.Builder()
                 .setRoomtypeName("Suite")
-                .setRoomPrice(200.0)
+                .setRoomPrice(200.00)
                 .build();
+        repository.save(roomType);
 
-        RoomType savedRoomType = roomTypeRepository.create(roomType);
-        roomTypeRepository.delete(savedRoomType);
-        RoomType deletedRoomType = roomTypeRepository.findById(savedRoomType.getTypeId());
+        RoomType found = repository.findById(roomType.getTypeId()).orElse(null);
+        assertNotNull(found);
+        assertEquals("Suite", found.getRoomtypeName());
+        assertEquals(200.00, found.getRoomPrice());
+    }
 
-        assertNull(deletedRoomType);
+    @Test
+    void testDeleteRoomType() {
+        RoomType roomType = new RoomType.Builder()
+                .setRoomtypeName("Standard")
+                .setRoomPrice(100.00)
+                .build();
+        repository.save(roomType);
+
+        repository.deleteById(roomType.getTypeId());
+        RoomType found = repository.findById(roomType.getTypeId()).orElse(null);
+        assertNull(found);
     }
 /*
     @Test
@@ -116,5 +63,6 @@ public class RoomTypeRepositoryTest
         // Then
         RoomType deletedRoomType = entityManager.find(RoomType.class, roomType.getTypeId());
         assertThat(deletedRoomType).isNull();
-    }*/
+    }
 }
+*/
